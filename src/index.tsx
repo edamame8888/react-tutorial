@@ -1,8 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client'
+import { Repeat } from 'typescript-tuple'
 import './index.css';
 
-function Square(props: {value: 'O' | 'X' | null, onClick: Function}) {
+type SquareState = 'O' | 'X' | null
+type SquareProps = {
+    value: SquareState
+    onClick: () => void
+}
+
+const Square = (props: SquareProps) => {
     return (
       <button className="square" onClick={() => props.onClick() }>
         {props.value}
@@ -11,35 +18,39 @@ function Square(props: {value: 'O' | 'X' | null, onClick: Function}) {
 
 }
 
-class Board extends React.Component {
-  renderSquare(i: number) {
-    return (<Square
-      value={this.props.squares[i]}
-      onClick={() => this.props.onClick(i)}
-    />);
-  }
+type BoardState = Repeat<SquareState, 9>
+type BoardProps = {
+    squares: BoardState
+    onClick: (i: number) => void
+}
 
-  render() {
-    return (
+const Board = (props: BoardProps) => {
+  const renderSquare = (i: number) =>
+    (<Square
+      value={props.squares[i]}
+      onClick={() => props.onClick(i)}
+  />);
+
+  return (
       <div>
         <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
+          {renderSquare(0)}
+          {renderSquare(1)}
+          {renderSquare(2)}
         </div>
         <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
+          {renderSquare(3)}
+          {renderSquare(4)}
+          {renderSquare(5)}
         </div>
         <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
+          {renderSquare(6)}
+          {renderSquare(7)}
+          {renderSquare(8)}
         </div>
       </div>
     );
-  }
+
 }
 
 class Game extends React.Component {
